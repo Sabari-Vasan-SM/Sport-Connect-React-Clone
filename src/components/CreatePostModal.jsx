@@ -112,8 +112,8 @@ function CreatePostModal({ onClose, onSubmit }) {
           <div className="success-message">
             <div className="tick-mark">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
-                <circle cx="26" cy="26" r="25" fill="none"></circle>
-                <path fill="none" stroke="#4caf50" strokeWidth="5" d="M14 27l7 7 16-16"></path>
+                <circle cx="26" cy="26" r="25" fill="none" />
+                <path fill="none" stroke="#4caf50" strokeWidth="5" d="M14 27l7 7 16-16" />
               </svg>
             </div>
             <p>Posted Successfully!</p>
