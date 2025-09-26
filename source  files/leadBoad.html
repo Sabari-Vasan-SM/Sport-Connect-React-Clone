@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaderboard UI with Chart.js</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url('1.png');
+      background-size: cover;
+      background-position: center;
+    }
+    .container {
+      display: flex;
+      justify-content: space-between;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .leaderboard-container,
+    .player-details-container {
+      flex: 0 0 48%;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    .leaderboard-container {
+      padding: 20px 30px;
+    }
+    .player-details-container {
+      padding: 20px 30px;
+      overflow: hidden;
+    }
+    .back-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: #5A50F3;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      z-index: 1000;
+      transition: background-color 0.3s;
+    }
+    .back-button:hover {
+      background-color: black;
+    }
+    .category-button {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+      padding: 10px 20px;
+      margin-bottom: 20px;
+    }
+    .category-button:hover {
+      background-color: #0056b3;
+    }
+    h1 {
+      text-align: left;
+      color: #333;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .leaderboard-item,
+    .player-detail-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid #e0e0e0;
+      cursor: pointer;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    .leaderboard-item:hover {
+      background-color: #f1f1f1;
+      transform: scale(1.02);
+    }
+    .leaderboard-item.active {
+      background-color: #e0e0e0;
+    }
+    .player-info {
+      display: flex;
+      align-items: center;
+    }
+    .player-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      margin-right: 10px;
+      object-fit: cover;
+      transition: transform 0.3s;
+    }
+    .player-avatar:hover {
+      transform: scale(1.1);
+    }
+    .player-name {
+      font-size: 18px;
+      color: #333;
+    }
+    .player-role {
+      font-size: 14px;
+      color: #888;
+    }
+    .activity-score {
+      font-size: 18px;
+      color: #333;
+      text-align: right;
+    }
+    #myPieChart {
+      max-width: 250px; /* Reduced size */
+      max-height: 250px; /* Reduced size */
+      margin: 0 auto;
+      transition: opacity 0.3s ease;
+    }
+    /* Popup styles */
+    .popup-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      transition: opacity 0.3s;
+    }
+    .popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(0.7);
+      width: 300px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      z-index: 1001;
+      padding: 20px;
+      box-sizing: border-box;
+      opacity: 0;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .popup.show {
+      display: block;
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .popup-overlay.show {
+      display: block;
+      opacity: 1;
+    }
+    .popup-content {
+      margin-bottom: 20px;
+    }
+    .popup-content ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    .popup-content ul li {
+      font-size: 16px;
+      margin-bottom: 8px;
+      padding: 8px;
+      background-color: #f1f1f1;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .popup-btn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #5A50F3;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .popup-btn:hover {
+      background-color: black;
+    }
+    /* Category Popup styles */
+    .category-popup {
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 300px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      z-index: 1001;
+      padding: 15px;
+      box-sizing: border-box;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    .category-popup.show {
+      display: block;
+      opacity: 1;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    .category-list {
+      list-style-type: none;
+      padding: 0;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 5px;
+    }
+    .category-list li {
+      background-color: #f1f1f1;
+      padding: 8px;
+      border-radius: 8px;
+      text-align: center;
+      font-size: 14px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      transition: background-color 0.3s, transform 0.3s;
+    }
+    .category-list li:hover {
+      background-color: #28a745;
+      color: white;
+      transform: scale(1.05);
+    }
+    .category-list li.selected {
+      background-color: #28a745;
+      color: white;
+    }
+    /* User details section */
+    .user-details {
+      margin-top: 20px;
+      padding: 20px;
+      background-color: #f1f1f1;
+      border-radius: 8px;
+      transition: background-color 0.3s;
+    }
+    .user-details:hover {
+      background-color: #e0e0e0;
+    }
+    .user-details p {
+      margin: 10px 0;
+      font-size: 16px;
+      color: #333;
+    }
+    .performance-stats {
+      margin-top: 20px;
+      font-size: 16px;
+      color: #333;
+    }
+    .performance-stats h3 {
+      margin-bottom: 10px;
+    }
+    .performance-stats ul {
+      list-style-type: none;
+      padding: 0;
+    }
+    .performance-stats ul li {
+      background-color: #fff;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <!-- Back Button -->
+  <a href="home.html" class="back-button">← Back</a>
+
+  <!-- Main Container -->
+  <div class="container">
+    <!-- Left Side Leaderboard -->
+    <div class="leaderboard-container">
+      <h1>Leader Board</h1>
+
+      <!-- Category Button -->
+      <button class="category-button" id="category-btn">Select Category</button>
+
+      <!-- Leaderboard Entries -->
+      <div class="leaderboard-item" data-user="1">
+        <div class="player-info">
+          <img src="https://randomuser.me/api/portraits/men/1.jpg" alt="Player 1" class="player-avatar">
+          <div>
+            <div class="player-name">Santhosh</div>
+            <div class="player-role">Basketball</div>
+          </div>
+        </div>
+        <div class="activity-score">92</div>
+      </div>
+      <div class="leaderboard-item" data-user="2">
+        <div class="player-info">
+          <img src="https://randomuser.me/api/portraits/women/2.jpg" alt="Player 2" class="player-avatar">
+          <div>
+            <div class="player-name">Rithikkha</div>
+            <div class="player-role">Soccer</div>
+          </div>
+        </div>
+        <div class="activity-score">86</div>
+      </div>
+      <div class="leaderboard-item" data-user="2">
+        <div class="player-info">
+          <img src="https://randomuser.me/api/portraits/women/3.jpg" alt="Player 3" class="player-avatar">
+          <div>
+            <div class="player-name">Voviya</div>
+            <div class="player-role">Soccer</div>
+          </div>
+        </div>
+        <div class="activity-score">87</div>
+      </div>
+      <div class="leaderboard-item" data-user="2">
+        <div class="player-info">
+          <img src="https://randomuser.me/api/portraits/women/4.jpg" alt="Player 4" class="player-avatar">
+          <div>
+            <div class="player-name">Neelesh</div>
+            <div class="player-role">Soccer</div>
+          </div>
+        </div>
+        <div class="activity-score">70</div>
+      </div>
+      <div class="leaderboard-item" data-user="2">
+        <div class="player-info">
+          <img src="https://randomuser.me/api/portraits/women/5.jpg" alt="Player 5" class="player-avatar">
+          <div>
+            <div class="player-name">Sabarivasan</div>
+            <div class="player-role">Soccer</div>
+          </div>
+        </div>
+        <div class="activity-score">80</div>
+      </div>
+      <div class="leaderboard-item" data-user="2">
+        <div class="player-info">
+          <img src="https://randomuser.me/api/portraits/women/6.jpg" alt="Player 6" class="player-avatar">
+          <div>
+            <div class="player-name">Pradeep</div>
+            <div class="player-role">Soccer</div>
+          </div>
+        </div>
+        <div class="activity-score">89</div>
+      </div>
+      <div class="leaderboard-item" data-user="2">
+        <div class="player-info">
+          <img src="https://randomuser.me/api/portraits/women/7.jpg" alt="Player 7" class="player-avatar">
+          <div>
+            <div class="player-name">Rasika</div>
+            <div class="player-role">Soccer</div>
+          </div>
+        </div>
+        <div class="activity-score">83</div>
+      </div>
+      <div class="leaderboard-item" data-user="2">
+        <div class="player-info">
+          <img src="https://randomuser.me/api/portraits/women/8.jpg" alt="Player 8" class="player-avatar">
+          <div>
+            <div class="player-name">Aravind</div>
+            <div class="player-role">Soccer</div>
+          </div>
+        </div>
+        <div class="activity-score">50</div>
+      </div>
+      <div class="leaderboard-item" data-user="2">
+        <div class="player-info">
+          <img src="https://randomuser.me/api/portraits/women/9.jpg" alt="Player 9" class="player-avatar">
+          <div>
+            <div class="player-name">Vijay</div>
+            <div class="player-role">Soccer</div>
+          </div>
+        </div>
+        <div class="activity-score">95</div>
+      </div>
+      <div class="leaderboard-item" data-user="2">
+        <div class="player-info">
+          <img src="https://randomuser.me/api/portraits/women/10.jpg" alt="Player 10" class="player-avatar">
+          <div>
+            <div class="player-name">Mukill</div>
+            <div class="player-role">Soccer</div>
+          </div>
+        </div>
+        <div class="activity-score">90</div>
+      </div>
+      <!-- Add more leaderboard items as needed -->
+    </div>
+
+    <!-- Right Side Player Details -->
+    <div class="player-details-container">
+      <!-- Player Details and Pie Chart -->
+      <div class="user-details">
+        <h2>User Details</h2>
+        <p><strong>Location:</strong> San Francisco</p>
+        <p><strong>Description:</strong> A dedicated sports player with a passion for basketball and soccer.</p>
+      </div>
+      <div class="performance-stats">
+        <h3>Performance Overview</h3>
+        <canvas id="myPieChart"></canvas>
+        <ul>
+          <li><strong>Basketball:</strong> 92</li>
+          <li><strong>Soccer:</strong> 87</li>
+          <li><strong>Swimming:</strong> 78</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Popup for Category Selection -->
+  <div class="category-popup" id="category-popup">
+    <ul class="category-list">
+      <li>Basketball</li>
+      <li>Soccer</li>
+      <li>Swimming</li>
+      <li>Tennis</li>
+      <li>Baseball</li>
+      <li>Volleyball</li>
+      <li>Hockey</li>
+      <li>Golf</li>
+      <li>Running</li>
+      <li>Rugby</li>
+    </ul>
+  </div>
+
+  <!-- Popup Overlay -->
+  <div class="popup-overlay" id="popup-overlay"></div>
+
+  <!-- Popup Content -->
+  <div class="popup" id="popup">
+    <div class="popup-content">
+      <h3>Performance Data</h3>
+      <ul>
+        <li><strong>Basketball:</strong> 92</li>
+        <li><strong>Soccer:</strong> 87</li>
+        <li><strong>Swimming:</strong> 78</li>
+      </ul>
+    </div>
+    <button class="popup-btn" id="popup-btn">OK</button>
+  </div>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    // Pie Chart Data
+    var ctx = document.getElementById('myPieChart').getContext('2d');
+    var myPieChart = new Chart(ctx, {
+      type: 'pie',
+      data: {
+        labels: ['Basketball', 'Soccer', 'Swimming'],
+        datasets: [{
+          label: 'Performance',
+          data: [92, 87, 78],
+          backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe'],
+          borderColor: '#fff',
+          borderWidth: 2,
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          tooltip: {
+            callbacks: {
+              label: function(tooltipItem) {
+                return tooltipItem.label + ': ' + tooltipItem.raw + '%';
+              }
+            }
+          },
+          legend: {
+            display: true,
+            position: 'top'
+          }
+        },
+        animation: {
+          duration: 1000,
+          easing: 'easeOutBounce'
+        }
+      }
+    });
+
+    // Event Listeners
+    document.getElementById('category-btn').addEventListener('click', function() {
+      var popup = document.getElementById('category-popup');
+      popup.classList.toggle('show');
+    });
+
+    document.getElementById('popup-btn').addEventListener('click', function() {
+      var popup = document.getElementById('popup');
+      var overlay = document.getElementById('popup-overlay');
+      popup.classList.remove('show');
+      overlay.classList.remove('show');
+    });
+
+    document.getElementById('popup-overlay').addEventListener('click', function() {
+      var popup = document.getElementById('popup');
+      var overlay = document.getElementById('popup-overlay');
+      popup.classList.remove('show');
+      overlay.classList.remove('show');
+    });
+
+    document.querySelectorAll('.leaderboard-item').forEach(function(item) {
+      item.addEventListener('click', function() {
+        var popup = document.getElementById('popup');
+        var overlay = document.getElementById('popup-overlay');
+        popup.classList.add('show');
+        overlay.classList.add('show');
+      });
+    });
+  </script>
+</body>
+</html>
