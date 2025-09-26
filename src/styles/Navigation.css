@@ -1,0 +1,65 @@
+nav {
+  width: 100%;
+  background: var(--color-white);
+  padding: 0.7rem 0;
+  position: fixed;
+  top: 0;
+  z-index: 20;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+nav .container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+nav .logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+nav .logo a {
+  color: var(--color-primary);
+  text-decoration: none;
+}
+
+nav .search-bar {
+  background: var(--color-light);
+  border-radius: var(--border-radius);
+  padding: var(--search-padding);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+nav .search-bar input[type="search"] {
+  background: transparent;
+  width: 30vw;
+  margin-left: 1rem;
+  font-size: 0.9rem;
+  color: var(--color-dark);
+}
+
+nav .search-bar input[type="search"]::placeholder {
+  color: var(--color-grey);
+}
+
+nav .create {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.logout-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--color-grey);
+  transition: color 0.3s ease;
+}
+
+.logout-btn:hover {
+  color: var(--color-primary);
+}
