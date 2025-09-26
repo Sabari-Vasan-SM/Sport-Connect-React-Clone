@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import Navigation from '../components/Navigation';
 import Sidebar from '../components/Sidebar';
@@ -9,8 +9,11 @@ import '../styles/Home.css';
 
 function Home() {
   const { currentUser } = useAuth();
+  const location = useLocation();
   const [showCreatePost, setShowCreatePost] = useState(false);
   const [posts, setPosts] = useState([]);
+
+  const isActive = (path) => location.pathname === path;
 
   // Mock posts data
   useEffect(() => {
@@ -101,6 +104,30 @@ function Home() {
 
           {/* MIDDLE - MAIN FEED */}
           <div className="middle">
+            {/* Mobile Navigation */}
+            <div className="mobile-sidebar mobile-only">
+              <Link to="/home" className={isActive('/home') || isActive('/') ? 'active' : ''}>
+                <i className="uil uil-estate"></i>
+                <span>Home</span>
+              </Link>
+              <Link to="/explore" className={isActive('/explore') ? 'active' : ''}>
+                <i className="uil uil-search"></i>
+                <span>Explore</span>
+              </Link>
+              <Link to="/fitness" className={isActive('/fitness') ? 'active' : ''}>
+                <i className="uil uil-dumbbell"></i>
+                <span>Fitness</span>
+              </Link>
+              <Link to="/leaderboard" className={isActive('/leaderboard') ? 'active' : ''}>
+                <i className="uil uil-trophy"></i>
+                <span>Leaders</span>
+              </Link>
+              <button onClick={() => setShowCreatePost(true)} className="mobile-create-btn">
+                <i className="uil uil-plus"></i>
+                <span>Post</span>
+              </button>
+            </div>
+
             <div className="feeds">
               {posts.map(post => (
                 <div key={post.id} className="feed">

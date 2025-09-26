@@ -24,3 +24,24 @@
 .profile .handle .text-muted {
   font-size: 0.85rem;
 }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .profile {
+    padding: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .profile .profile-photo {
+    width: 2.2rem;
+    height: 2.2rem;
+  }
+  
+  .profile .handle h4 {
+    font-size: 0.9rem;
+  }
+  
+  .profile .handle .text-muted {
+    font-size: 0.8rem;
+  }
+}

@@ -75,3 +75,60 @@ main .container {
   background: var(--color-primary);
   color: white;
 }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .explore-page {
+    margin-top: 3.5rem;
+  }
+  
+  main .container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+  
+  main .container .left,
+  main .container .right {
+    display: none;
+  }
+  
+  .explore-content {
+    margin: 0.5rem 0;
+    padding: 1.5rem;
+  }
+  
+  .explore-content h2 {
+    font-size: 1.5rem;
+    margin-bottom: 0.75rem;
+  }
+  
+  .coming-soon i {
+    font-size: 3rem;
+  }
+  
+  .coming-soon h3 {
+    font-size: 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .explore-content {
+    padding: 1rem;
+  }
+  
+  .explore-content h2 {
+    font-size: 1.25rem;
+  }
+  
+  .coming-soon {
+    margin-top: 2rem;
+  }
+  
+  .coming-soon i {
+    font-size: 2.5rem;
+  }
+  
+  .coming-soon h3 {
+    font-size: 1.1rem;
+  }
+}

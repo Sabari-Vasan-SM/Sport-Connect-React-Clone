@@ -7,4 +7,45 @@
 
 .App {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Better mobile viewport handling */
+@media (max-width: 768px) {
+  html {
+    font-size: 16px; /* Ensure readable text on mobile */
+  }
+  
+  .App {
+    padding-bottom: env(safe-area-inset-bottom); /* Handle notch/home indicator */
+  }
+}
+
+/* Focus styles for better accessibility */
+button:focus,
+input:focus,
+select:focus,
+textarea:focus,
+a:focus {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Better image loading */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Prevent layout shift */
+.profile-photo,
+.feed .photo {
+  contain: layout style paint;
 }

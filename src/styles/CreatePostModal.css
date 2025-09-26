@@ -180,14 +180,63 @@
   .popup-content {
     width: 95%;
     padding: 1.5rem;
+    max-height: 85vh;
+  }
+  
+  .popup-header h3 {
+    font-size: 1.1rem;
+  }
+  
+  .file-preview {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.75rem;
+  }
+  
+  .preview-item img,
+  .preview-item video {
+    height: 120px;
+  }
+  
+  .form-group textarea {
+    padding: 0.875rem;
+    font-size: 0.9rem;
+  }
+  
+  .custom-file-btn {
+    padding: 0.875rem 1.25rem;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .popup-content {
+    width: 98%;
+    padding: 1rem;
+    margin: 1rem;
+    border-radius: 12px;
   }
   
   .file-preview {
     grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 0.5rem;
   }
   
   .preview-item img,
   .preview-item video {
     height: 100px;
+  }
+  
+  .form-group textarea {
+    padding: 0.75rem;
+    font-size: 1rem;
+  }
+  
+  .tick-mark {
+    width: 80px;
+    height: 80px;
+  }
+  
+  .success-message p {
+    font-size: 1.1rem;
   }
 }
