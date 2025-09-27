@@ -35,6 +35,7 @@ function App() {
             <Route path="/association-journey" element={<AssociationJourney />} />
             <Route path="/fitness" element={<Fitness />} />
             <Route path="/leaderboard" element={<Leaderboard />} />
+            
             <Route path="/register" element={<Registration />} />
             <Route path="/image-grid" element={<ImageGrid />} />
           </Routes>
